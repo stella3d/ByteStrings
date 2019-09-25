@@ -7,5 +7,11 @@ namespace ByteStrings
             var remainder = count % 4;
             return count + remainder;
         }
+        
+        public static int Align16(int count)
+        {
+            var remainder = count % 16;
+            return count + remainder;
+        }
     }
 }

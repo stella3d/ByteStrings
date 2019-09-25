@@ -21,6 +21,11 @@ namespace ByteStrings
         public Int4String(string source, Allocator allocator = Allocator.Persistent)
         {
             var bytes = Encoding.UTF8.GetBytes(source);
+            this = new Int4String(bytes, allocator);
+        }
+        
+        public Int4String(byte[] bytes, Allocator allocator = Allocator.Persistent)
+        {
             var remainder = bytes.Length % elementByteCount;
             TrailingByteCount = remainder == 0 ? 0 : elementByteCount - remainder;
             var alignedCount = bytes.Length + TrailingByteCount;

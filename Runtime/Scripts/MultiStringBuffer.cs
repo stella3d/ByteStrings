@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using Unity.Collections;
+using Unity.Mathematics;
 
 namespace ByteStrings
 {
@@ -97,6 +98,57 @@ namespace ByteStrings
         public void Dispose()
         {
             if(Bytes.IsCreated) Bytes.Dispose();
+            if(Indices.IsCreated) Indices.Dispose();
+            if(Lengths.IsCreated) Lengths.Dispose();
+        }
+    }
+    
+    public class MultiInt4StringBuffer : IDisposable
+    {
+        static readonly byte[] k_TempIntBytes = new byte[4];
+        
+        public NativeArray<int4> Data;
+        
+        public NativeArray<int> Indices;
+        public NativeArray<int> Lengths;
+
+        public int StringCount;
+
+        public MultiInt4StringBuffer(string[] sources, Allocator allocator = Allocator.Persistent)
+        {
+            Indices = new NativeArray<int>(sources.Length, allocator);
+            Lengths = new NativeArray<int>(sources.Length, allocator);
+            
+            var totalInt4Count = 0;
+            for (var i = 0; i < sources.Length; i++)
+            {
+                var byteCount = Utils.Align16(Encoding.UTF8.GetByteCount(sources[i]));
+                var int4Count = byteCount / 16;
+                Indices[i] = totalInt4Count;
+                Lengths[i] = int4Count;
+                totalInt4Count += int4Count;
+            }
+
+            Data = new NativeArray<int4>(totalInt4Count, allocator);
+            var intOutputIndex = 0;
+            foreach (var s in sources)
+            {
+                var int4Str = new Int4String(s, Allocator.Temp);
+                foreach (var i4 in int4Str.IntBytes)
+                {
+                    Data[intOutputIndex] = i4;
+                    intOutputIndex++;
+                }
+                
+                int4Str.Dispose();
+            }
+
+            StringCount = sources.Length;
+        }
+
+        public void Dispose()
+        {
+            if(Data.IsCreated) Data.Dispose();
             if(Indices.IsCreated) Indices.Dispose();
             if(Lengths.IsCreated) Lengths.Dispose();
         }
