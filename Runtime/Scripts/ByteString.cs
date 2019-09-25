@@ -5,9 +5,9 @@ using Unity.Collections.LowLevel.Unsafe;
 
 namespace ByteStrings
 {
-    public struct ByteString : IDisposable
+    public struct ByteString : IDisposable, IEquatable<ByteString>
     {
-        public NativeArray<byte> Bytes;
+        public readonly NativeArray<byte> Bytes;
 
         public ByteString(string source, Allocator allocator = Allocator.Persistent)
         {
@@ -27,6 +27,31 @@ namespace ByteStrings
         public void Dispose()
         {
             if(Bytes.IsCreated) Bytes.Dispose();
+        }
+
+        public bool Equals(ByteString other)
+        {
+            return Bytes.Equals(other.Bytes);
+        }
+        
+        public override bool Equals(object obj)
+        {
+            return obj is ByteString other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            return Bytes.GetHashCode();
+        }
+
+        public static bool operator ==(ByteString left, ByteString right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(ByteString left, ByteString right)
+        {
+            return !left.Equals(right);
         }
     }
 }
