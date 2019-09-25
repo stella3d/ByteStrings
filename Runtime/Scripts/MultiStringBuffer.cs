@@ -98,7 +98,7 @@ namespace ByteStrings
 
             StringCount = sources.Length;
         }
-
+        
         public void Dispose()
         {
             if(Bytes.IsCreated) Bytes.Dispose();

@@ -24,7 +24,6 @@ namespace ByteStrings.Tests
             Assert.AreEqual(input, m_String.ToString());
         }
         
-        
         static readonly string[] Dragula =
         {
             "Dig through the ditches and",
@@ -38,6 +37,20 @@ namespace ByteStrings.Tests
             m_ByteStringBuffer = new MultiByteStringBuffer(Dragula);
             
             Assert.AreEqual(Dragula.Length, m_ByteStringBuffer.StringCount);
+        }
+        
+        [Test]
+        public void Search_FindString_InMultiStringBuffer()
+        {
+            var buffer = new MultiByteStringBuffer(Dragula);
+            m_ByteStringBuffer = buffer;
+
+            const int expectedIndex = 1;
+            m_String = new ByteString(Dragula[expectedIndex]);
+
+            var index = Search.FindString(ref m_String, ref buffer.Bytes, ref buffer.Indices, ref buffer.Lengths);
+            
+            Assert.AreEqual(expectedIndex, index);
         }
     }
 }
