@@ -23,7 +23,7 @@ namespace ByteStrings
             var totalIntCount = 0;
             for (var i = 0; i < sources.Length; i++)
             {
-                var byteCount = Align4(Encoding.UTF8.GetByteCount(sources[i]));
+                var byteCount = Utils.Align4(Encoding.UTF8.GetByteCount(sources[i]));
                 var intCount = byteCount / 4;
                 Indices[i] = totalIntCount;
                 Lengths[i] = intCount;
@@ -47,11 +47,6 @@ namespace ByteStrings
             StringCount = sources.Length;
         }
 
-        static int Align4(int count)
-        {
-            var remainder = count % 4;
-            return count + remainder;
-        }
 
         public void Dispose()
         {

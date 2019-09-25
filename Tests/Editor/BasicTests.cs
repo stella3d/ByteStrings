@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using Unity.Collections;
+using UnityEngine;
 
 namespace ByteStrings.Tests
 {
@@ -7,12 +8,15 @@ namespace ByteStrings.Tests
     {
         ByteString m_String;
         MultiByteStringBuffer m_ByteStringBuffer;
+        
+        IntString m_IntString;
 
         [TearDown]
         public void AfterEach()
         {
             m_String.Dispose();
             m_ByteStringBuffer.Dispose();
+            m_IntString.Dispose();
         }
 
         [TestCase("Eat the rich")]
@@ -22,6 +26,16 @@ namespace ByteStrings.Tests
         {
             m_String = new ByteString(input, Allocator.Temp);
             Assert.AreEqual(input, m_String.ToString());
+        }
+        
+        [TestCase("Eat the rich")]
+        [TestCase("Medicare for all")]
+        [TestCase("Health justice now!")]
+        public void IntString_ToString_OutputIsAlmostIdentical(string input)
+        {
+            m_IntString = new IntString(input, Allocator.Temp);
+            Debug.Log($"input - {input}, output - {m_IntString}");
+            Assert.AreEqual(input, m_IntString.ToString());
         }
         
         static readonly string[] Dragula =
