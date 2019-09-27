@@ -99,7 +99,7 @@ namespace ByteStrings
         }
     }
     
-    public class MultiInt4StringBuffer : IDisposable
+    public struct MultiInt4StringBuffer : IStringBuffer<Int4String>
     {
         public NativeArray<int4> Data;
         
@@ -108,38 +108,47 @@ namespace ByteStrings
         public int StringCount;
         public int ElementCount;
 
-        public int StringCapacity;
+        public readonly int StringCapacity;
         
         public MultiInt4StringBuffer(int stringCapacity, int elementCapacity, Allocator allocator = Allocator.Persistent)
         {
+            ElementCount = 0;
+            StringCount = 0;
+            StringCapacity = stringCapacity;
             Indices = new NativeArray<int>(stringCapacity, allocator);
             Data = new NativeArray<int4>(elementCapacity, allocator);
         }
         
         public MultiInt4StringBuffer(string[] sources, Allocator allocator = Allocator.Persistent)
         {
+            ElementCount = 0;
+            StringCapacity = sources.Length;
             Indices = new NativeArray<int>(sources.Length, allocator);
             
             var totalInt4Count = 0;
             for (var i = 0; i < sources.Length; i++)
             {
-                var byteCount = Utils.Align16(Encoding.UTF8.GetByteCount(sources[i]));
+                var str = sources[i];
+                var unalignedByteCount = Encoding.UTF8.GetByteCount(str);
+                var byteCount = Utils.Align16(unalignedByteCount);
                 var int4Count = byteCount / 16;
-                Indices[i] = totalInt4Count;
                 totalInt4Count += int4Count;
             }
 
             Data = new NativeArray<int4>(totalInt4Count, allocator);
             var intOutputIndex = 0;
-            foreach (var s in sources)
+            for (var i = 0; i < sources.Length; i++)
             {
+                var s = sources[i];
                 var int4Str = new Int4String(s, Allocator.Temp);
+                
+                Indices[i] = intOutputIndex;
                 foreach (var i4 in int4Str.IntBytes)
                 {
                     Data[intOutputIndex] = i4;
                     intOutputIndex++;
                 }
-                
+
                 int4Str.Dispose();
             }
 
@@ -156,13 +165,32 @@ namespace ByteStrings
                 return false;
 
             Indices[StringCount] = ElementCount;
-            
-            for (var i = 0; i < str.IntBytes.Length; i++)
-            {
-                Data[ElementCount + i] = str.IntBytes[i];
-                ElementCount++;
-            }
 
+            for (var i = 0; i < str.IntBytes.Length; i++)
+                Data[ElementCount + i] = str.IntBytes[i];
+
+            ElementCount += str.IntBytes.Length;
+            StringCount++;
+            return true;
+        }
+        
+        public bool TryAdd(byte[] bytes, int start, int elementCount)
+        {
+            if (StringCount >= StringCapacity)
+                return false;
+            
+            var capacityLeft = Data.Length - ElementCount;
+            if (capacityLeft < elementCount)
+                return false;
+
+            var array = ArrayUtil.ToNative<int4>(ref bytes, start, elementCount);
+            Indices[StringCount] = ElementCount;
+            
+            for (var i = 0; i < array.Length; i++)
+                Data[ElementCount + i] = array[i];
+
+            ElementCount += array.Length;
+            StringCount++;
             return true;
         }
 
@@ -173,9 +201,10 @@ namespace ByteStrings
         }
     }
 
-    public interface IStringBuffer<T>
+    public interface IStringBuffer<T> : IDisposable
     {
         bool TryAdd(T str);
+        
     }
 }
 

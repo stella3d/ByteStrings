@@ -11,7 +11,7 @@ namespace ByteStrings
         public static int Align16(int count)
         {
             var remainder = count % 16;
-            return count + remainder;
+            return count + 16 - remainder;
         }
     }
 }

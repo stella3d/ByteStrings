@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using Unity.Mathematics;
 
 namespace ByteStrings
@@ -52,6 +53,18 @@ namespace ByteStrings
             var w = BitConverter.ToInt32(bytes, start + 12);
             
             return new int4(x, y, z, w);
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool All(this bool4 b)
+        {
+            return b.x && b.y && b.z && b.w;
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Any(this bool4 b)
+        {
+            return b.x || b.y || b.z || b.w;
         }
     }
 }

@@ -24,6 +24,12 @@ namespace ByteStrings
             this = new Int4String(bytes, allocator);
         }
         
+        public Int4String(NativeArray<int4> source, int trailingByteCount)
+        {
+            IntBytes = source;
+            TrailingByteCount = trailingByteCount;
+        }
+        
         public Int4String(byte[] bytes, Allocator allocator = Allocator.Persistent)
         {
             var remainder = bytes.Length % elementByteCount;

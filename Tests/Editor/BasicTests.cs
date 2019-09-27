@@ -11,6 +11,8 @@ namespace ByteStrings.Tests
         
         IntString m_IntString;
         Int4String m_Int4String;
+        
+        
 
         [TearDown]
         public void AfterEach()
@@ -47,35 +49,6 @@ namespace ByteStrings.Tests
             m_Int4String = new Int4String(input, Allocator.Temp);
             Debug.Log($"input - {input}, output - {m_Int4String}");
             Assert.AreEqual(input, m_Int4String.ToString());
-        }
-        
-        static readonly string[] Dragula =
-        {
-            "Dig through the ditches and",
-            "Burn through the witches and",
-            "Slam in the back of my Dragula"
-        };
-
-        [Test]
-        public void MultiStringBuffer_Constructor()
-        {
-            m_ByteStringBuffer = new MultiByteStringBuffer(Dragula);
-            
-            Assert.AreEqual(Dragula.Length, m_ByteStringBuffer.StringCount);
-        }
-        
-        [Test]
-        public void Search_FindString_InMultiStringBuffer()
-        {
-            var buffer = new MultiByteStringBuffer(Dragula);
-            m_ByteStringBuffer = buffer;
-
-            const int expectedIndex = 1;
-            m_String = new ByteString(Dragula[expectedIndex]);
-
-            var index = Search.FindString(ref m_String, ref buffer.Bytes, ref buffer.Indices);
-            
-            Assert.AreEqual(expectedIndex, index);
         }
     }
 
