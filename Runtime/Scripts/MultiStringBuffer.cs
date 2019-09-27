@@ -172,5 +172,10 @@ namespace ByteStrings
             if(Indices.IsCreated) Indices.Dispose();
         }
     }
+
+    public interface IStringBuffer<T>
+    {
+        bool TryAdd(T str);
+    }
 }
 

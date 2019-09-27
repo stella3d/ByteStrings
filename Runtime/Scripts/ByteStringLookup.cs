@@ -3,7 +3,7 @@ using System.Text;
 
 namespace ByteStrings
 {
-    public class ByteStringLookup
+    public class StringLookup<T>
     {
         static readonly Dictionary<int, List<string>> k_ByteLengthToStrings = new Dictionary<int, List<string>>();
         
