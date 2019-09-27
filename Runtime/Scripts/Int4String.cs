@@ -108,7 +108,7 @@ namespace ByteStrings
         
         public override bool Equals(object obj)
         {
-            return obj is ByteString other && Equals(other);
+            return obj is Int4String other && Equals(other);
         }
 
         public override int GetHashCode()

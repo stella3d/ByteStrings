@@ -12,16 +12,16 @@ namespace ByteStrings
         /// <param name="indices">The shared buffer's string start indices</param>
         /// <param name="lengths">The shared buffer's (utf8) string byte lengths</param>
         /// <returns>The index into the indices buffer that the string was matched at</returns>
-        public static int FindString(ref ByteString searchFor, ref NativeArray<byte> bytes, 
-            ref NativeArray<int> indices, ref NativeArray<int> lengths)
+        public static int FindString(ref ByteString searchFor, ref NativeArray<byte> bytes, ref NativeArray<int> indices)
         {
             var searchBytes = searchFor.Bytes;
-            for (int i = 0; i < indices.Length; i++)
+            for (int i = 1; i < indices.Length; i++)
             {
-                var startIndex = indices[i];
-                var length = lengths[i];
-                var found = true;
+                var startIndex = indices[i - 1];
+                var endIndex = indices[i];
                 
+                var found = true;
+                var length = endIndex - startIndex;
                 // TODO - for my narrow use case, probably faster to scan in reverse ?
                 for (int searchForIndex = 0; searchForIndex < length; searchForIndex++)
                 {
@@ -32,9 +32,9 @@ namespace ByteStrings
                         break;
                     }
                 }
-
+                
                 if (found)
-                    return i;
+                    return i - 1;
             }
 
             return -1;

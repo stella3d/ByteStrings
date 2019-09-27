@@ -73,7 +73,7 @@ namespace ByteStrings.Tests
             const int expectedIndex = 1;
             m_String = new ByteString(Dragula[expectedIndex]);
 
-            var index = Search.FindString(ref m_String, ref buffer.Bytes, ref buffer.Indices, ref buffer.Lengths);
+            var index = Search.FindString(ref m_String, ref buffer.Bytes, ref buffer.Indices);
             
             Assert.AreEqual(expectedIndex, index);
         }
