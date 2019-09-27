@@ -9,7 +9,7 @@ namespace ByteStrings.Tests
         ByteString m_ByteString;
         Int4String m_Int4String;
         MultiByteStringBuffer m_ByteStringBuffer;
-        MultiInt4StringBuffer m_Int4StringBuffer;
+        Int4StringBuffer m_Int4StringBuffer;
         
         IntString m_IntString;
         
@@ -54,7 +54,7 @@ namespace ByteStrings.Tests
         [Test]
         public void ConstructFromStringArray_Int4StringBuffer()
         {
-            m_Int4StringBuffer = new MultiInt4StringBuffer(Dragula);
+            m_Int4StringBuffer = new Int4StringBuffer(Dragula);
             Assert.AreEqual(Dragula.Length, m_Int4StringBuffer.StringCount);
         }
         
@@ -75,7 +75,7 @@ namespace ByteStrings.Tests
         [Test]
         public void Search_FindString_LastInMultiInt4StringBuffer()
         {
-            var buffer = new MultiInt4StringBuffer(DragulaLonger);
+            var buffer = new Int4StringBuffer(DragulaLonger);
             m_Int4StringBuffer = buffer;
 
             var expectedIndex = DragulaLonger.Length - 1;
@@ -88,7 +88,7 @@ namespace ByteStrings.Tests
         [Test]
         public void Search_FindString_InMultiInt4StringBuffer()
         {
-            var buffer = new MultiInt4StringBuffer(DragulaLonger);
+            var buffer = new Int4StringBuffer(DragulaLonger);
             m_Int4StringBuffer = buffer;
 
             var expectedIndex = DragulaLonger.Length - 3;

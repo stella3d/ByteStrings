@@ -99,7 +99,7 @@ namespace ByteStrings
         }
     }
     
-    public struct MultiInt4StringBuffer : IStringBuffer<Int4String>
+    public struct Int4StringBuffer : IStringBuffer<Int4String>
     {
         public NativeArray<int4> Data;
         
@@ -110,7 +110,7 @@ namespace ByteStrings
 
         public readonly int StringCapacity;
         
-        public MultiInt4StringBuffer(int stringCapacity, int elementCapacity, Allocator allocator = Allocator.Persistent)
+        public Int4StringBuffer(int stringCapacity, int elementCapacity, Allocator allocator = Allocator.Persistent)
         {
             ElementCount = 0;
             StringCount = 0;
@@ -119,7 +119,7 @@ namespace ByteStrings
             Data = new NativeArray<int4>(elementCapacity, allocator);
         }
         
-        public MultiInt4StringBuffer(string[] sources, Allocator allocator = Allocator.Persistent)
+        public Int4StringBuffer(string[] sources, Allocator allocator = Allocator.Persistent)
         {
             ElementCount = 0;
             StringCapacity = sources.Length;

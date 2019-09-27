@@ -8,8 +8,8 @@ namespace ByteStrings
         static readonly Dictionary<int, List<string>> k_ByteLengthToStrings = new Dictionary<int, List<string>>();
         
         // we bucket by encoded byte length
-        public readonly Dictionary<int, MultiInt4StringBuffer> ByteLengthToBucket = 
-            new Dictionary<int, MultiInt4StringBuffer>();
+        public readonly Dictionary<int, Int4StringBuffer> ByteLengthToBucket = 
+            new Dictionary<int, Int4StringBuffer>();
 
         public void AddAll(string[] strings)
         {
@@ -31,7 +31,7 @@ namespace ByteStrings
             foreach (var kvp in k_ByteLengthToStrings)
             {
                 var byteLength = kvp.Key;
-                var int4StringBuffer = new MultiInt4StringBuffer(kvp.Value.ToArray());
+                var int4StringBuffer = new Int4StringBuffer(kvp.Value.ToArray());
                 ByteLengthToBucket.Add(byteLength, int4StringBuffer);
             }
         }
