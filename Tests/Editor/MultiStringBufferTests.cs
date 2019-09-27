@@ -73,12 +73,25 @@ namespace ByteStrings.Tests
         }
         
         [Test]
-        public void Search_FindString_InMultiInt4StringBuffer()
+        public void Search_FindString_LastInMultiInt4StringBuffer()
         {
             var buffer = new MultiInt4StringBuffer(DragulaLonger);
             m_Int4StringBuffer = buffer;
 
             var expectedIndex = DragulaLonger.Length - 1;
+            m_Int4String = new Int4String(DragulaLonger[expectedIndex]);
+
+            var index = Search.FindString(ref m_Int4String, ref buffer.Data, ref buffer.Indices);
+            Assert.AreEqual(expectedIndex, index);
+        }
+        
+        [Test]
+        public void Search_FindString_InMultiInt4StringBuffer()
+        {
+            var buffer = new MultiInt4StringBuffer(DragulaLonger);
+            m_Int4StringBuffer = buffer;
+
+            var expectedIndex = DragulaLonger.Length - 3;
             m_Int4String = new Int4String(DragulaLonger[expectedIndex]);
 
             var index = Search.FindString(ref m_Int4String, ref buffer.Data, ref buffer.Indices);
