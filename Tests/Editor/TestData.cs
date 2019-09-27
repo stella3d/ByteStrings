@@ -13,6 +13,16 @@ namespace ByteStrings.Tests
 
             return strings;
         }
+        
+        // helps test performance impact of strings that share a common beginning
+        public static string[] RandomStringsWithPrefix(string prefix, int count, int stringLengthMin, int stringLengthMax)
+        {
+            var strings = new string[count];
+            for (int i = 0; i < strings.Length; i++)
+                strings[i] = prefix + RandomString(stringLengthMin, stringLengthMax);
+
+            return strings;
+        }
 
         public static string RandomString(int minLength, int maxLength)
         {

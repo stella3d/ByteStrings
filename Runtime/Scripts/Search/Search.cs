@@ -77,7 +77,7 @@ namespace ByteStrings
                     var fromSearch = searchArray[searchForIndex];
                     
                     // if any of the 4 compared are not equal, the strings are not equal
-                    if ((fromBuffer != fromSearch).Any())
+                    if (math.any(fromBuffer != fromSearch))
                     {
                         found = false;
                         break;
@@ -94,8 +94,8 @@ namespace ByteStrings
                 var bufferIndex = endIndex + searchForIndex;
                 var fromBuffer = encodedBufferStrings[bufferIndex];
                 var fromSearch = searchArray[searchForIndex];
-
-                if ((fromBuffer != fromSearch).Any())
+                
+                if (math.any(fromBuffer != fromSearch))
                 {
                     lastFound = false;
                     break;
