@@ -1,4 +1,5 @@
 using System.Diagnostics.SymbolStore;
+using Unity.Burst;
 using Unity.Collections;
 using Unity.Mathematics;
 
@@ -41,7 +42,6 @@ namespace ByteStrings
             return -1;
         }
         
-        
         /// <summary>
         /// Find a Int4String in a MultiInt4StringBuffer
         /// </summary>
@@ -49,6 +49,7 @@ namespace ByteStrings
         /// <param name="encodedBufferStrings">The shared buffer's bytes</param>
         /// <param name="indices">The shared buffer's string start indices</param>
         /// <returns>The index into the indices buffer that the string was matched at</returns>
+        [BurstCompile]
         public static int FindString(ref Int4String searchFor, ref NativeArray<int4> encodedBufferStrings, 
             ref NativeArray<int> indices)
         {
@@ -60,9 +61,12 @@ namespace ByteStrings
                 endIndex = indices[i];
                 
                 // if we're not taking up the same number of 16-byte blocks, strings not equal
+                // PERFORMANCE NOTE - unnecessary if using when bucketed by length
+                /*
                 var length = endIndex - startIndex;
                 if (length != searchArray.Length)
                     continue;
+                */
                 
                 var found = true;
                 // TODO - for my narrow use case, probably faster to scan in reverse ?
@@ -72,7 +76,7 @@ namespace ByteStrings
                     var fromBuffer = encodedBufferStrings[bufferIndex];
                     var fromSearch = searchArray[searchForIndex];
                     
-                    // if any of the 4 ints compared are not equal, the strings are not equal
+                    // if any of the 4 compared are not equal, the strings are not equal
                     if ((fromBuffer != fromSearch).Any())
                     {
                         found = false;
