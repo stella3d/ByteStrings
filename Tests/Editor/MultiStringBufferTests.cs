@@ -61,7 +61,8 @@ namespace ByteStrings.Tests
             var expectedIndex = TestStrings.DragulaLonger.Length - 1;
             m_Int4String = new Int4String(TestStrings.DragulaLonger[expectedIndex]);
 
-            var index = Search.FindString(ref m_Int4String, ref buffer.Data, ref buffer.Indices);
+            var array = m_Int4String.IntBytes;
+            var index = Search.FindString(ref array, ref buffer.Data, ref buffer.Indices);
             Assert.AreEqual(expectedIndex, index);
         }
         
@@ -74,7 +75,8 @@ namespace ByteStrings.Tests
             var expectedIndex = TestStrings.DragulaLonger.Length - 3;
             m_Int4String = new Int4String(TestStrings.DragulaLonger[expectedIndex]);
 
-            var index = Search.FindString(ref m_Int4String, ref buffer.Data, ref buffer.Indices);
+            var array = m_Int4String.IntBytes;
+            var index = Search.FindString(ref array, ref buffer.Data, ref buffer.Indices);
             Assert.AreEqual(expectedIndex, index);
         }
     }

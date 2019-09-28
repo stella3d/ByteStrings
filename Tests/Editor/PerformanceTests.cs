@@ -38,7 +38,8 @@ namespace ByteStrings.Tests
             m_SmallJob = new SingleStringSearchJobInt4(tempInt4String, m_SmallerBuffer, m_Result);
             m_SmallJob.Run();
             
-            Search.FindString(ref tempInt4String, ref m_SmallerBuffer.Data, ref m_SmallerBuffer.Indices);
+            var array = tempInt4String.IntBytes;
+            Search.FindString(ref array, ref m_SmallerBuffer.Data, ref m_SmallerBuffer.Indices);
             tempInt4String.Dispose();
 
             m_Strings = TestData.RandomStringsWithPrefix("/composition", StringCount, MinLength, MaxLength);
@@ -61,7 +62,8 @@ namespace ByteStrings.Tests
             m_String = new Int4String(m_Strings[searchForIndex]);
             
             Profiler.BeginSample("Search_FindInt4String");
-            var foundIndex = Search.FindString(ref m_String, ref m_Buffer.Data, ref m_Buffer.Indices);
+            var array = m_String.IntBytes;
+            var foundIndex = Search.FindString(ref array, ref m_Buffer.Data, ref m_Buffer.Indices);
             Assert.AreEqual(searchForIndex, foundIndex);
             Profiler.EndSample();           
 
