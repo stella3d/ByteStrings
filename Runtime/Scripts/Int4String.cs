@@ -20,7 +20,7 @@ namespace ByteStrings
         public Int4String(string source, Allocator allocator = Allocator.Persistent)
         {
             var bytes = Encoding.UTF8.GetBytes(source);
-            this = new Int4String(bytes, allocator);
+            this = new Int4String(bytes, 0, bytes.Length, allocator);
         }
         
         public Int4String(NativeArray<int4> source, int trailingByteCount)
@@ -30,18 +30,19 @@ namespace ByteStrings
         }
         
         // TODO - probably can replace some of this with the unsafe cast + trailing handling?
-        public Int4String(byte[] bytes, Allocator allocator = Allocator.Persistent)
+        public Int4String(byte[] bytes, int start, int length, Allocator allocator = Allocator.Persistent)
         {
-            var remainder = bytes.Length % elementByteCount;
+            var remainder = length % elementByteCount;
             TrailingByteCount = remainder == 0 ? 0 : elementByteCount - remainder;
-            var alignedCount = bytes.Length + TrailingByteCount;
+            var alignedCount = length + TrailingByteCount;
             var elementCount = alignedCount / elementByteCount;
             IntBytes = new NativeArray<int4>(elementCount, allocator);
             
             var intOutputIndex = 0;
             if (remainder == 0)
             {
-                for (var i = 0; i < alignedCount - 15; i += elementByteCount)
+                var endCount = start + alignedCount - 15;
+                for (var i = start; i < endCount; i += elementByteCount)
                 {
                     var x = BitConverter.ToInt32(bytes, i);
                     var y = BitConverter.ToInt32(bytes, i + 4);
@@ -54,8 +55,8 @@ namespace ByteStrings
             }
             else
             {
-                var endIndex = bytes.Length - remainder;
-                for (var bi = 0; bi < endIndex; bi += elementByteCount)
+                var endIndex = start + length - remainder;
+                for (var bi = start; bi < endIndex; bi += elementByteCount)
                 {
                     var x = BitConverter.ToInt32(bytes, bi);
                     var y = BitConverter.ToInt32(bytes, bi + 4);
@@ -67,7 +68,7 @@ namespace ByteStrings
                 }
 
                 var trailingIndex = 0;
-                for (int i = endIndex; i < bytes.Length; i++)
+                for (int i = endIndex; i < length; i++)
                 {
                     k_TempTrailingBytes[trailingIndex] = bytes[i];
                     trailingIndex++;

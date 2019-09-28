@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System.Text;
+using NUnit.Framework;
 using Unity.Collections;
 using UnityEngine;
 
@@ -26,7 +27,12 @@ namespace ByteStrings.Tests
             foreach (var line in TestStrings.DragulaLonger)
                 m_Lookup.Add(line);
                 
-            Debug.Log(m_Lookup.ByteLengthToBucket.Count);
+            Debug.Log(m_Lookup.Buckets.Count);
+
+            var findBytes = Encoding.UTF8.GetBytes(TestStrings.GetDown);
+            var found = m_Lookup.TryFind(findBytes, 0, findBytes.Length);
+            
+            Debug.Log("found? " + found);
         }
     }
 }

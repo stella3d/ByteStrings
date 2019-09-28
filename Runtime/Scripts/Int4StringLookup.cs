@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text;
+using Unity.Collections;
 
 namespace ByteStrings
 {
@@ -9,7 +10,7 @@ namespace ByteStrings
         internal readonly Dictionary<int, List<string>> m_ByteLengthToStrings = new Dictionary<int, List<string>>();
         
         // we bucket by 4-aligned utf8 byte length
-        public readonly Dictionary<int, Int4StringBuffer> ByteLengthToBucket = 
+        public readonly Dictionary<int, Int4StringBuffer> Buckets = 
             new Dictionary<int, Int4StringBuffer>();
 
         int m_BucketAlignment = 16;
@@ -26,7 +27,7 @@ namespace ByteStrings
 
         public void AddAll(string[] strings)
         {
-            ByteLengthToBucket.Clear();
+            Buckets.Clear();
             m_ByteLengthToStrings.Clear();
             for (int i = 0; i < strings.Length; i++)
             {
@@ -46,7 +47,7 @@ namespace ByteStrings
             {
                 var byteLength = kvp.Key;
                 var int4StringBuffer = new Int4StringBuffer(kvp.Value.ToArray());
-                ByteLengthToBucket.Add(byteLength, int4StringBuffer);
+                Buckets.Add(byteLength, int4StringBuffer);
             }
         }
 
@@ -64,17 +65,29 @@ namespace ByteStrings
 
             stringList.Add(input);
 
-            if (!ByteLengthToBucket.TryGetValue(bucketKey, out var buffer))
+            if (!Buckets.TryGetValue(bucketKey, out var buffer))
                 buffer = new Int4StringBuffer(8, alignedByteCount);
 
             buffer.TryAdd(bytes, 0, alignedByteCount / 16);
-            ByteLengthToBucket[bucketKey] = buffer;
+            Buckets[bucketKey] = buffer;
         }
 
         int AlignToBucket(int byteLength)
         {
             int remainder = byteLength % m_BucketAlignment;
             return byteLength + m_BucketAlignment - remainder;
+        }
+        
+        public bool TryFind(byte[] bytes, int start, int byteLength)
+        {
+            var bucketKey = AlignToBucket(byteLength);
+            if (!Buckets.TryGetValue(bucketKey, out var bucket))
+                return false;
+
+            var i4Str = new Int4String(bytes, start, byteLength, Allocator.Temp);
+            var foundIndex = Search.FindString(ref i4Str, ref bucket.Data, ref bucket.Indices);
+            i4Str.Dispose();
+            return foundIndex != -1;
         }
     }
 }
