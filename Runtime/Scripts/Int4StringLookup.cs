@@ -12,7 +12,6 @@ namespace ByteStrings
         public readonly Dictionary<int, Int4StringBuffer> ByteLengthToBucket = 
             new Dictionary<int, Int4StringBuffer>();
 
-
         int m_BucketAlignment = 16;
         
         public int BucketAlignment
@@ -20,7 +19,7 @@ namespace ByteStrings
             get => m_BucketAlignment;
             set
             {
-                if (value == 4 || value == 8 || value == 16)
+                if (value == 16 || value == 8 || value == 4 || value == 2 || value == 1)
                     m_BucketAlignment = value;
             }
         }
