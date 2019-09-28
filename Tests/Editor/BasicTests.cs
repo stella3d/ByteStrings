@@ -57,5 +57,30 @@ namespace ByteStrings.Tests
         public const string EatTheRich = "Eat the rich";
         public const string M4A = "Medicare for all";
         public const string HealthJustice = "Health justice now!";
+        public const string GetDown = "Get down with the sickness";
+        
+        public const string Longer = "This test string is longer than the first few i wrote for testing.";
+        
+        public static readonly string[] Dragula =
+        {
+            "Dig through the ditches and",
+            "Burn through the witches",
+            "I slam in the back of my Dragula"
+        };
+        
+        public static readonly string[] DragulaLonger =
+        {
+            "Dead I am the one, exterminatin' son",
+            "Slippin' through the trees, stranglin' the breeze",
+            "Dead I am the sky, watchin' angels cry",
+            "While they slowly turn, conquering the worm",
+            "Dig through the ditches and",
+            "Burn through the witches",
+            "I slam in the back of my Dragula",
+            "Dead I am the pool, spreading from the fool",
+            "Weak and want you need, nowhere as you bleed",
+            "Dead I am the rat, feast upon the cat",
+            "Tender is the fur, dying as you purr"
+        };
     }
 }

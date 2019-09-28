@@ -49,7 +49,6 @@ namespace ByteStrings
         /// <param name="encodedBufferStrings">The shared buffer's bytes</param>
         /// <param name="indices">The shared buffer's string start indices</param>
         /// <returns>The index into the indices buffer that the string was matched at</returns>
-        [BurstCompile(CompileSynchronously = true)]
         public static int FindString(ref Int4String searchFor, ref NativeArray<int4> encodedBufferStrings, 
             ref NativeArray<int> indices)
         {

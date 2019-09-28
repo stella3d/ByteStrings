@@ -2,7 +2,6 @@
 using System.Text;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
-using UnityEngine;
 using Unity.Mathematics;
 
 namespace ByteStrings
@@ -30,6 +29,7 @@ namespace ByteStrings
             TrailingByteCount = trailingByteCount;
         }
         
+        // TODO - probably can replace some of this with the unsafe cast + trailing handling?
         public Int4String(byte[] bytes, Allocator allocator = Allocator.Persistent)
         {
             var remainder = bytes.Length % elementByteCount;
@@ -91,15 +91,11 @@ namespace ByteStrings
             }
         }
 
-        public override string ToString()
+        public override unsafe string ToString()
         {
-            unsafe
-            {
-                var ptr = IntBytes.GetUnsafeReadOnlyPtr();
-                var byteReadLength = (IntBytes.Length * elementByteCount) - TrailingByteCount;
-                Debug.Log($"read length: {byteReadLength} , trailing byte count: {TrailingByteCount}");
-                return Encoding.UTF8.GetString((byte*)ptr, byteReadLength);
-            }
+            var ptr = IntBytes.GetUnsafeReadOnlyPtr();
+            var byteReadLength = (IntBytes.Length * elementByteCount) - TrailingByteCount;
+            return Encoding.UTF8.GetString((byte*)ptr, byteReadLength);
         }
         
         public void Dispose()
