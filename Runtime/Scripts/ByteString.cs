@@ -9,10 +9,22 @@ namespace ByteStrings
     {
         public readonly NativeArray<byte> Bytes;
 
+        public static Encoding Encoding = Encoding.ASCII;
+
         public ByteString(string source, Allocator allocator = Allocator.Persistent)
         {
-            var bytes = Encoding.UTF8.GetBytes(source);
+            var bytes = Encoding.GetBytes(source);
             Bytes = new NativeArray<byte>(bytes, allocator);
+        }
+        
+        public ByteString(byte[] source, int length, int offset = 0, Allocator allocator = Allocator.Persistent)
+        {
+            Bytes = new NativeArray<byte>(length, allocator);
+
+            // TODO - measure & optimize
+            var end = offset + length;
+            for (var i = offset; i < end; i++)
+                Bytes[i - offset] = source[i];
         }
 
         public override string ToString()
@@ -20,7 +32,7 @@ namespace ByteStrings
             unsafe
             {
                 var ptr = (byte*) Bytes.GetUnsafeReadOnlyPtr();
-                return Encoding.UTF8.GetString(ptr, Bytes.Length);
+                return Encoding.GetString(ptr, Bytes.Length);
             }
         }
         
