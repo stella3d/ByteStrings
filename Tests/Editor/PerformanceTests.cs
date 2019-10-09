@@ -107,17 +107,8 @@ namespace ByteStrings.Tests
             }
             k_Stopwatch.Stop();
             var intStrTicks = k_Stopwatch.ElapsedTicks;
-            
-            k_Stopwatch.Restart();
-            foreach (var intString in intStrings)
-            {
-                eql = searchIntString.CompareBytes(intString);
-            }
-            k_Stopwatch.Stop();
 
-            Debug.Log($"elements {searchForIndex} Equals(), str {strTicks}, intString  {intStrTicks}, " + 
-                      $"CompareBytes {k_Stopwatch.ElapsedTicks}");
-            
+            Debug.Log($"elements {searchForIndex} Equals(), str {strTicks}, intString  {intStrTicks}");
             foreach (var t in intStrings)
                 t.Dispose();
             
@@ -280,7 +271,22 @@ namespace ByteStrings.Tests
                 }
             }
 
-            Debug.Log($"count {m_Strings.Length}, TryGetValueFromBytes(), checked {k_Stopwatch.ElapsedTicks}");
+            var wcTicks = k_Stopwatch.ElapsedTicks;
+            k_Stopwatch.Reset();
+            foreach (var byteStr in bytes)
+            {
+                fixed (byte* byteStrPtr = byteStr)
+                {
+                    k_Stopwatch.Start();
+
+                    lookup.TryGetValueFromBytesNoCopy(byteStrPtr, byteStr.Length, out var value);
+                
+                    k_Stopwatch.Stop();
+                }
+            }
+
+            var ncTicks = k_Stopwatch.ElapsedTicks;
+            Debug.Log($"count {m_Strings.Length}, TryGetValueFromBytes() time in ticks,w/ copy: {wcTicks}, no-copy: {ncTicks}");
             
             foreach (var t in intStrings)
                 t.Dispose();
