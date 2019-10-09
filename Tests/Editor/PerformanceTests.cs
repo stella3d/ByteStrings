@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
@@ -85,11 +86,11 @@ namespace ByteStrings.Tests
         {
             var searchForIndex = StringCount / 4;
             var searchString = m_Strings[searchForIndex];
-            var searchIntString = new ManagedIntString(searchString);
+            var searchIntString = new BlobString(searchString);
             
-            var intStrings = new ManagedIntString[m_Strings.Length];
+            var intStrings = new BlobString[m_Strings.Length];
             for (int i = 0; i < m_Strings.Length; i++)
-                intStrings[i] = new ManagedIntString(m_Strings[i]);
+                intStrings[i] = new BlobString(m_Strings[i]);
 
             bool eql;
             k_Stopwatch.Restart();
@@ -118,9 +119,9 @@ namespace ByteStrings.Tests
         [Test]
         public void GetHashCode_ManagedIntString()
         {
-            var intStrings = new ManagedIntString[m_Strings.Length];
+            var intStrings = new BlobString[m_Strings.Length];
             for (int i = 0; i < m_Strings.Length; i++)
-                intStrings[i] = new ManagedIntString(m_Strings[i]);
+                intStrings[i] = new BlobString(m_Strings[i]);
 
             int hashCode;
             k_Stopwatch.Restart();
@@ -150,9 +151,9 @@ namespace ByteStrings.Tests
         [Test]
         public void DictionaryTryGetValue_ManagedIntString()
         {
-            var intStrings = new ManagedIntString[m_Strings.Length];
+            var intStrings = new BlobString[m_Strings.Length];
             for (int i = 0; i < m_Strings.Length; i++)
-                intStrings[i] = new ManagedIntString(m_Strings[i]);
+                intStrings[i] = new BlobString(m_Strings[i]);
 
             var strDict = new Dictionary<string, int>(m_Strings.Length);
             for (var i = 0; i < m_Strings.Length; i++)
@@ -166,7 +167,7 @@ namespace ByteStrings.Tests
             k_Stopwatch.Stop();
             var strTicks = k_Stopwatch.ElapsedTicks;
             
-            var intStrDict = new Dictionary<ManagedIntString, int>(intStrings.Length);
+            var intStrDict = new Dictionary<BlobString, int>(intStrings.Length);
             for (var i = 0; i < intStrings.Length; i++)
                 intStrDict.Add(intStrings[i], i);
             
@@ -189,12 +190,12 @@ namespace ByteStrings.Tests
         [Test]
         public unsafe void ManagedIntString_SetFromBytes()
         {
-            var intStrings = new ManagedIntString[m_Strings.Length];
+            var intStrings = new BlobString[m_Strings.Length];
             var bytes = new byte[m_Strings.Length][];
             for (int i = 0; i < m_Strings.Length; i++)
             {
                 var str = m_Strings[i];
-                intStrings[i] = new ManagedIntString(str);
+                intStrings[i] = new BlobString(str);
                 bytes[i] = Encoding.ASCII.GetBytes(str);
             }
 
@@ -235,9 +236,8 @@ namespace ByteStrings.Tests
             }
 
             var memCpyTicks = k_Stopwatch.ElapsedTicks;
-
-            Debug.Log($"count {m_Strings.Length}, SetBytes(), checked {checkedTicks}, unchecked {unCheckedTicks}, memcpy {memCpyTicks}");
             
+            Debug.Log($"count {m_Strings.Length}, SetBytes(), checked {checkedTicks}, unchecked {unCheckedTicks}, memcpy {memCpyTicks}");
             foreach (var t in intStrings)
                 t.Dispose();
         }
@@ -245,16 +245,16 @@ namespace ByteStrings.Tests
         [Test]
         public unsafe void IntStringLookup_TryGetValueFromBytes()
         {
-            var intStrings = new ManagedIntString[m_Strings.Length];
+            var intStrings = new BlobString[m_Strings.Length];
             var bytes = new byte[m_Strings.Length][];
             for (int i = 0; i < m_Strings.Length; i++)
             {
                 var str = m_Strings[i];
-                intStrings[i] = new ManagedIntString(str);
+                intStrings[i] = new BlobString(str);
                 bytes[i] = Encoding.ASCII.GetBytes(str);
             }
             
-            var lookup = new IntStringLookup<int>();
+            var lookup = new BlobStringLookup<int>();
             for (int i = 0; i < intStrings.Length; i++)
                 lookup.Add(intStrings[i], i);
 
@@ -271,22 +271,8 @@ namespace ByteStrings.Tests
                 }
             }
 
-            var wcTicks = k_Stopwatch.ElapsedTicks;
-            k_Stopwatch.Reset();
-            foreach (var byteStr in bytes)
-            {
-                fixed (byte* byteStrPtr = byteStr)
-                {
-                    k_Stopwatch.Start();
-
-                    lookup.TryGetValueFromBytesNoCopy(byteStrPtr, byteStr.Length, out var value);
-                
-                    k_Stopwatch.Stop();
-                }
-            }
-
             var ncTicks = k_Stopwatch.ElapsedTicks;
-            Debug.Log($"count {m_Strings.Length}, TryGetValueFromBytes() time in ticks,w/ copy: {wcTicks}, no-copy: {ncTicks}");
+            Debug.Log($"count {m_Strings.Length}, TryGetValueFromBytes() time in ticks, {ncTicks}");
             
             foreach (var t in intStrings)
                 t.Dispose();

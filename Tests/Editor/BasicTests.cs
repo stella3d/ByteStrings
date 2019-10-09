@@ -57,7 +57,7 @@ namespace ByteStrings.Tests
         [TestCase(TestStrings.HealthJustice)]
         public void ManagedIntString_ToString_OutputIsIdentical(string input)
         {
-            var managedIntString = new ManagedIntString(input);
+            var managedIntString = new BlobString(input);
             Debug.Log($"input - {input}, managed int string output - {managedIntString}");
             Assert.AreEqual(input, managedIntString.ToString());
             managedIntString.Dispose();
@@ -70,7 +70,7 @@ namespace ByteStrings.Tests
         public void ManagedIntString_SetFromBytes(string input)
         {
             var randomStr = TestData.RandomString(input.Length, input.Length);
-            var managedIntString = new ManagedIntString(randomStr);
+            var managedIntString = new BlobString(randomStr);
             Debug.Log($"random string before byte set: {managedIntString}");
             
             var inputAsciiBytes = Encoding.ASCII.GetBytes(input);
