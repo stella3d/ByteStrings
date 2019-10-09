@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System.Text;
+using NUnit.Framework;
 using Unity.Collections;
 using UnityEngine;
 
@@ -34,7 +35,7 @@ namespace ByteStrings.Tests
         [TestCase(TestStrings.EatTheRich)]
         [TestCase(TestStrings.M4A)]
         [TestCase(TestStrings.HealthJustice)]
-        public void IntString_ToString_OutputIsAlmostIdentical(string input)
+        public void IntString_ToString_OutputIsIdentical(string input)
         {
             m_IntString = new IntString(input, Allocator.Temp);
             Debug.Log($"input - {input}, output - {m_IntString}");
@@ -44,11 +45,39 @@ namespace ByteStrings.Tests
         [TestCase(TestStrings.EatTheRich)]
         [TestCase(TestStrings.M4A)]
         [TestCase(TestStrings.HealthJustice)]
-        public void Int4String_ToString_OutputIsAlmostIdentical(string input)
+        public void Int4String_ToString_OutputIsIdentical(string input)
         {
             m_Int4String = new Int4String(input, Allocator.Temp);
             Debug.Log($"input - {input}, output - {m_Int4String}");
             Assert.AreEqual(input, m_Int4String.ToString());
+        }
+        
+        [TestCase(TestStrings.EatTheRich)]
+        [TestCase(TestStrings.M4A)]
+        [TestCase(TestStrings.HealthJustice)]
+        public void ManagedIntString_ToString_OutputIsIdentical(string input)
+        {
+            var managedIntString = new ManagedIntString(input);
+            Debug.Log($"input - {input}, managed int string output - {managedIntString}");
+            Assert.AreEqual(input, managedIntString.ToString());
+            managedIntString.Dispose();
+        }
+        
+        
+        [TestCase(TestStrings.EatTheRich)]
+        [TestCase(TestStrings.M4A)]
+        [TestCase(TestStrings.HealthJustice)]
+        public void ManagedIntString_SetFromBytes(string input)
+        {
+            var randomStr = TestData.RandomString(input.Length, input.Length);
+            var managedIntString = new ManagedIntString(randomStr);
+            Debug.Log($"random string before byte set: {managedIntString}");
+            
+            var inputAsciiBytes = Encoding.ASCII.GetBytes(input);
+            managedIntString.SetBytesUnchecked(inputAsciiBytes, 0, inputAsciiBytes.Length);
+            Debug.Log($"input - {input}, managed int string output after byte set- {managedIntString}");
+            Assert.AreEqual(input, managedIntString.ToString());
+            managedIntString.Dispose();
         }
     }
 

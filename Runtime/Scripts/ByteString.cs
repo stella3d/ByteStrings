@@ -51,9 +51,14 @@ namespace ByteStrings
             return obj is ByteString other && Equals(other);
         }
 
+        // seems to be easily many times faster than string hashes
         public override int GetHashCode()
         {
-            return Bytes.GetHashCode();
+            var lastByte = Bytes[Bytes.Length - 1];
+            unchecked
+            {
+                return Bytes.Length ^ 397 + lastByte;
+            }
         }
 
         public static bool operator ==(ByteString left, ByteString right)
